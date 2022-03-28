@@ -37,6 +37,8 @@
 #include <openssl/rand.h>
 #include <openssl/evp.h>
 #include <openssl/hmac.h>
+#include <openssl/hmac.h>
+#include <openssl/crypto.h>
 
 typedef struct {
   EVP_CIPHER *evp_cipher;
@@ -110,7 +112,9 @@ static int sqlcipher_openssl_activate(void *ctx) {
 
   if(openssl_init_count == 0 && openssl_external_init == 0)  {
     /* if the library was not externally initialized, then should be now */
-    OpenSSL_add_all_algorithms();
+      OPENSSL_init_crypto(OPENSSL_INIT_ADD_ALL_CIPHERS \
+                          | OPENSSL_INIT_ADD_ALL_DIGESTS \
+                          | OPENSSL_INIT_LOAD_CONFIG, NULL);
   } 
 
 #ifndef SQLCIPHER_OPENSSL_NO_MUTEX_RAND
@@ -139,7 +143,7 @@ static int sqlcipher_openssl_deactivate(void *ctx) {
        Note: this code will only be reached if OpensSSL_add_all_algorithms()
        is called by SQLCipher internally. This should prevent SQLCipher from 
        "cleaning up" openssl when it was initialized externally by the program */
-      EVP_cleanup();
+//      EVP_cleanup();
     } else {
       openssl_external_init = 0;
     }
@@ -215,7 +219,8 @@ static int sqlcipher_openssl_cipher(void *ctx, int mode, unsigned char *key, int
 
 static int sqlcipher_openssl_set_cipher(void *ctx, const char *cipher_name) {
   openssl_ctx *o_ctx = (openssl_ctx *)ctx;
-  EVP_CIPHER* cipher = (EVP_CIPHER *) EVP_get_cipherbyname(cipher_name);
+//  EVP_CIPHER* cipher = (EVP_CIPHER *) EVP_CIPHER_name(cipher_name);
+  EVP_CIPHER* cipher = (EVP_CIPHER *) EVP_sm4_cbc();
   if(cipher != NULL) {
     o_ctx->evp_cipher = cipher;
   }
@@ -223,7 +228,8 @@ static int sqlcipher_openssl_set_cipher(void *ctx, const char *cipher_name) {
 }
 
 static const char* sqlcipher_openssl_get_cipher(void *ctx) {
-  return EVP_CIPHER_name(((openssl_ctx *)ctx)->evp_cipher);
+//  return EVP_CIPHER_name(((openssl_ctx *)ctx)->evp_cipher);
+    return NULL;
 }
 
 static int sqlcipher_openssl_get_key_sz(void *ctx) {

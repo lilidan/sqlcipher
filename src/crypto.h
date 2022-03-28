@@ -56,7 +56,7 @@
 #endif
 
 #ifndef CIPHER
-#define CIPHER "aes-256-cbc"
+#define CIPHER "sm4-cbc"
 #endif
 
 #define CIPHER_DECRYPT 0
