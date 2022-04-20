@@ -180,7 +180,7 @@
       "GCC_WARN_UNUSED_VARIABLE": "NO",
       "CLANG_WARN_COMMA": "NO",
       "CLANG_WARN_STRICT_PROTOTYPES": "NO",
-      "HEADER_SEARCH_PATHS":"$(inherited) ${PODS_ROOT}/OneKit/OneKit/boringssl/include",
+      "HEADER_SEARCH_PATHS":"'$(inherited)' '${PODS_ROOT}/OneKit/OneKit/boringssl/include'",
     },
     "header_dir": "sqlcipher",
     "dependencies": {
